@@ -14,13 +14,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
-              <caret line="123" column="29" lean-forward="true" selection-start-line="123" selection-start-column="29" selection-end-line="123" selection-end-column="29" />
+            <state relative-caret-position="357">
+              <caret line="21" column="31" lean-forward="true" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Models_v1.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/trainer/Models_v1.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="141">
+              <caret line="315" column="28" lean-forward="true" selection-start-line="315" selection-start-column="28" selection-end-line="315" selection-end-column="28" />
               <folding>
-                <element signature="e#599#637#0" expanded="true" />
+                <element signature="e#0#38#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -29,21 +39,9 @@
       <file leaf-file-name="task.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/task.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="-845">
               <caret line="23" column="15" lean-forward="false" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="15" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Acc_Statistics.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/statistics/Acc_Statistics.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="20" column="28" lean-forward="true" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -61,9 +59,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/trainer/Models_v1.py" />
         <option value="$PROJECT_DIR$/statistics/Acc_Statistics.py" />
         <option value="$PROJECT_DIR$/trainer/model.py" />
+        <option value="$PROJECT_DIR$/trainer/Models_v1.py" />
       </list>
     </option>
   </component>
@@ -128,6 +126,11 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Potato user 1\Documents\GitHub\cloud_ml_test\cloudml\trainer" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -215,12 +218,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/setup.py</url>
-          <line>14</line>
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="1" />
     </breakpoint-manager>
     <watches-manager />
@@ -230,9 +227,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#599#637#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -240,9 +235,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#599#637#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -250,19 +243,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#599#637#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/Models_v1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="211" column="42" lean-forward="false" selection-start-line="211" selection-start-column="42" selection-end-line="211" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#38#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -306,16 +287,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding>
-            <element signature="e#597#633#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/create_records.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-102">
@@ -342,9 +313,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/task.py">
+    <entry file="file://$PROJECT_DIR$/trainer/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#597#633#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/task.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-845">
           <caret line="23" column="15" lean-forward="false" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="15" />
           <folding />
         </state>
@@ -352,10 +333,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="123" column="29" lean-forward="true" selection-start-line="123" selection-start-column="29" selection-end-line="123" selection-end-column="29" />
+        <state relative-caret-position="357">
+          <caret line="21" column="31" lean-forward="true" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/spatial_transformer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/Models_v1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="315" column="28" lean-forward="true" selection-start-line="315" selection-start-column="28" selection-end-line="315" selection-end-column="28" />
           <folding>
-            <element signature="e#599#637#0" expanded="true" />
+            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>

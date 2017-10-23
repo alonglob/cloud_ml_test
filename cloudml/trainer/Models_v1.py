@@ -7,8 +7,7 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from CNNmodels.CNNmodel_v3.linux_package_2.spatial_transformer import transformer
-from CNNmodels.CNNmodel_v3.linux_package_2.hyper_parameters import *
+from trainer.spatial_transformer import transformer
 
 # this model contains:
 # Route 1: input - [transformer] - [conv1,output1] - [conv2] - [fc1] - [dropout] - [fc2]
@@ -18,107 +17,6 @@ BN_EPSILON = 0.001
 
 LABELS = os.path.join(os.getcwd(), "labels_1024.tsv")
 SPRITES = os.path.join(os.getcwd(), "sprite_1024.png")
-
-
-def NNConstructor(x):
-    """NNConstructor builds the graph for a deep net for classifying digits.
-
-    Args:
-      x: an input tensor with the dimensions (N_examples, 784), where 784 is the
-      number of pixels in a standard MNIST image.
-
-    Returns:
-      A tuple (y, keep_prob). y is a tensor of shape (N_examples, 10), with values
-      equal to the logits of classifying the digit into one of 10 classes (the
-      digits 0-9). keep_prob is a scalar placeholder for the probability of
-      dropout.
-
-    Routes:
-      2 Routes available:
-      Route 1: greyscale image processing. produces a value of volume
-      Route 2: ARGB image processing. produces a value of density
-    """
-
-    # Reshape to use within a convolutional neural net.
-    # Last dimension is for "features" - there is only one here, since images are
-    # grayscale -- it would be 3 for an RGB image, 4 for RGBA, etc.
-
-    # reshape is used for both routes
-    with tf.name_scope('reshape'):
-        x_image_grey = tf.reshape(x, [-1, 28, 28, 1])
-        # x_image_RGB = tf.reshape(x1, [-1, 28, 28, 3])
-
-    # Spacial Transformer
-    x_trans, keep_prob = spacial_transformer(x, x_image_grey)
-
-    # %% We'll setup the first convolutional layer
-    # Weight matrix is [height x width x input_channels x output_channels]
-    filter_size = 7
-    n_filters_1 = 64
-    W_conv1 = weight_variable([filter_size, filter_size, 1, n_filters_1], 'conv0_weights')
-
-    # %% Bias is [output_channels]
-    b_conv1 = bias_variable([n_filters_1], 'conv0_biases')
-
-    # %% Now we can build a graph which does the first layer of convolution:
-    # we define our stride as batch x height x width x channels
-    # instead of pooling, we use strides of 2 and more layers
-    # with smaller filters
-
-    h_conv1 = tf.nn.relu(
-        tf.nn.conv2d(input=x_trans,
-                     filter=W_conv1,
-                     strides=[1, 2, 2, 1],
-                     padding="VALID") +
-        b_conv1)
-
-    # Residual Block
-    res_1 = residual_module(h_conv1, 0)
-
-    # Residual Block
-    res_2 = residual_module(res_1, 0)
-
-    # Second pooling layer.
-    with tf.name_scope('pool2'):
-        h_pool2 = max_pool_2x2(res_2)
-
-    # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
-    # is down to 7x7x64 feature maps -- maps this to 1024 features.
-    with tf.name_scope('fc1'):
-        W_fc1 = weight_variable([7 * 7 * 64, 1024], 'fc1_weights')
-        b_fc1 = bias_variable([1024], 'fc1_bias')
-
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
-        h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
-
-    # Dropout - controls the complexity of the model, prevents co-adaptation of
-    # features.
-    with tf.name_scope('dropout1'):
-        keep_prob1 = tf.placeholder(tf.float32)
-        h_fc1_drop1 = tf.nn.dropout(h_fc1, keep_prob1)
-
-    # Map the 1024 features to 10 classes, one for each digit
-    with tf.name_scope('fc2'):
-        W_fc2 = weight_variable([1024, 10], 'fc2_weights')
-        b_fc2 = bias_variable([10], 'fc2_bias')
-
-        y_conv1 = tf.matmul(h_fc1_drop1, W_fc2) + b_fc2
-
-    # map the 10 classes to 1 value which is the mean summed softmax function
-    # mean summed softmax = sum over the length:(i)
-    # for: a(i)*i:(activation(probability) * value)
-    with tf.name_scope('mean_softmax_layer1'):
-        y_conv11 = tf.identity(y_conv1)
-        y_conv11.set_shape([0, 10])
-        i1 = 0
-        mean_argmax1 = 0
-        y_conv_soft1 = tf.nn.softmax(y_conv11)
-
-        while i1 < 10:
-            mean_argmax1 += y_conv_soft1[:, i1] * i1
-            i1 += 1
-
-    return y_conv1, keep_prob, keep_prob1, mean_argmax1, h_fc1
 
 
 def max_pool_3x3_s1(x):
