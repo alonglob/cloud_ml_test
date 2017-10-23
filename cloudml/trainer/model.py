@@ -74,7 +74,7 @@ def _cnn_model_fn(features, labels, mode):
   res1 = blocks.residual_module(conv1,'0', 64)
 
   # Dense Layer
-  pool2_flat = tf.reshape(res1, [-1, 15 * 15 * 64])
+  pool2_flat = tf.reshape(res1, [-1, 12 * 12 * 64])
   dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
   dropout = tf.layers.dropout(
       inputs=dense, rate=0.4, training=(mode == Modes.TRAIN))
