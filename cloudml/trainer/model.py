@@ -72,7 +72,7 @@ def _cnn_model_fn(features, labels, mode):
       activation=tf.nn.relu)
 
   # Residual Layer #1
-  res1 = blocks.residual_module(conv1, '1', 64, 5)
+  res1 = blocks.residual_module(conv1, '1', 64)
 
   # Dense Layer
   pool2_flat = tf.reshape(res1, [-1, 7 * 7 * 64])

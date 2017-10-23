@@ -92,7 +92,7 @@ def spacial_transformer(x, x_image_grey, out_size=(28, 28)):
     return (x_trans, keep_prob)
 
 
-def residual_module(h_conv1, number, filters, kernelSize=3):
+def residual_module(h_conv1, number, filters, kernelSize=5):
     # %% this Residual Block contains 3 inner layers -> 1x1 -> 3x3 -> 1x1
     with tf.name_scope('residual_block' + number):
 
