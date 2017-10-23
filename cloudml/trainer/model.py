@@ -136,7 +136,7 @@ def build_estimator(model_dir):
   return tf.estimator.Estimator(
       model_fn=_cnn_model_fn,
       model_dir=model_dir,
-      config=tf.contrib.learn.RunConfig(save_checkpoints_steps=1000))
+      config=tf.contrib.learn.RunConfig(save_checkpoints_steps=50))
 
 
 def serving_input_fn():
