@@ -72,10 +72,10 @@ def _cnn_model_fn(features, labels, mode):
       activation=tf.nn.relu)
 
   # Residual Layer #1
-  res1 = blocks.residual_module(conv1, '1', 64)
+  #res1 = blocks.residual_module(conv1, '1', 64)
 
   # Dense Layer
-  pool2_flat = tf.reshape(res1, [-1, 7 * 7 * 64])
+  pool2_flat = tf.reshape(conv1, [-1, 7 * 7 * 64])
   dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
   dropout = tf.layers.dropout(
       inputs=dense, rate=0.4, training=(mode == Modes.TRAIN))
@@ -123,7 +123,7 @@ def build_estimator(model_dir):
   return tf.estimator.Estimator(
       model_fn=_cnn_model_fn,
       model_dir=model_dir,
-      config=tf.contrib.learn.RunConfig(save_checkpoints_secs=10))
+      config=tf.contrib.learn.RunConfig(save_checkpoints_steps=100))
 
 
 def serving_input_fn():
