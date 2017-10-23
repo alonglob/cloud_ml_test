@@ -19,7 +19,6 @@ from __future__ import print_function
 
 import tensorflow as tf
 from tensorflow.python.estimator.model_fn import ModeKeys as Modes
-import trainer.Models_v1 as blocks
 
 
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -66,16 +65,25 @@ def _cnn_model_fn(features, labels, mode):
   # Convolutional Layer #1
   conv1 = tf.layers.conv2d(
       inputs=input_layer,
-      filters=64,
-      kernel_size=[7, 7],
+      filters=32,
+      kernel_size=[5, 5],
       padding='same',
       activation=tf.nn.relu)
 
-  # Residual Layer #1
-  #res1 = blocks.residual_module(conv1, '1', 64)
+  # Pooling Layer #1
+  pool1 = tf.layers.max_pooling2d(inputs=conv1, pool_size=[2, 2], strides=2)
+
+  # Convolutional Layer #2 and Pooling Layer #2
+  conv2 = tf.layers.conv2d(
+      inputs=pool1,
+      filters=64,
+      kernel_size=[5, 5],
+      padding='same',
+      activation=tf.nn.relu)
+  pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2)
 
   # Dense Layer
-  pool2_flat = tf.reshape(conv1, [-1, 7 * 7 * 64])
+  pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
   dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
   dropout = tf.layers.dropout(
       inputs=dense, rate=0.4, training=(mode == Modes.TRAIN))
@@ -123,7 +131,7 @@ def build_estimator(model_dir):
   return tf.estimator.Estimator(
       model_fn=_cnn_model_fn,
       model_dir=model_dir,
-      config=tf.contrib.learn.RunConfig(save_checkpoints_steps=100))
+      config=tf.contrib.learn.RunConfig(save_checkpoints_secs=180))
 
 
 def serving_input_fn():
