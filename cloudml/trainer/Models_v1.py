@@ -209,7 +209,7 @@ def residual_module(h_conv1, number, filters, kernelSize=3):
                 activation=tf.nn.relu)
             conv = tf.layers.batch_normalization(conv)
 
-        with tf.variable_scope('Res_conv_3x3' + number):
+        with tf.variable_scope('Res_conv_' + number):
             conv = tf.layers.conv2d(
                 conv,
                 filters=filters/2,
