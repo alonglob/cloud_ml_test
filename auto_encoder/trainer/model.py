@@ -47,18 +47,19 @@ def read_and_decode(filename_queue):
 
 
 def input_fn(filename, batch_size=1):
-  filename_queue = tf.train.string_input_producer([filename])
+    filename_queue = tf.train.string_input_producer([filename])
 
-  image, label = read_and_decode(filename_queue)
-  images, labels = tf.train.batch(
-      [image, image], batch_size=batch_size,
-      capacity=1)
+    image, label = read_and_decode(filename_queue)
+    images, labels = tf.train.batch(
+        [image, image], batch_size=batch_size,
+        capacity=1)
 
-  return {'inputs': images}, images
+    return {'inputs': images}, images
 
 
 def get_input_fn(filename, batch_size=1):
     return lambda: input_fn(filename, batch_size)
+
 
 def _cnn_model_fn(features, labels, mode):
     # Input Layer
@@ -68,7 +69,7 @@ def _cnn_model_fn(features, labels, mode):
     trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
 
     ### Encoder
-    conv1 = tf.layers.conv2d(inputs=trans, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    conv1 = tf.layers.conv2d(inputs=input_layer, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
     # Now 28x28x32
     maxpool1 = tf.layers.max_pooling2d(conv1, pool_size=(2, 2), strides=(2, 2), padding='same')
     # Now 14x14x32
