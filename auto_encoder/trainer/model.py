@@ -54,7 +54,7 @@ def input_fn(filename, batch_size=1):
       [image, image], batch_size=batch_size,
       capacity=1)
 
-  return {'inputs': images}, labels
+  return {'inputs': images}, images
 
 
 def get_input_fn(filename, batch_size=1):
