@@ -21,6 +21,8 @@ import math
 import tensorflow as tf
 from tensorflow.python.estimator.model_fn import ModeKeys as Modes
 import trainer.Models_v1 as blocks
+import gzip, os
+import _pickle as pickle
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -45,12 +47,12 @@ def read_and_decode(filename_queue):
 
 
 def input_fn(filename, batch_size=1):
-    filename_queue = tf.train.string_input_producer([filename])
+    script_dir = os.path.dirname(__file__)
 
-    image, label = read_and_decode(filename_queue)
+    image = unpacker(script_dir + '/pickles/Blueberry_images.pickle')
     images, labels = tf.train.batch(
-        [image, label], batch_size=batch_size,
-        capacity=1000 + 3 * batch_size)
+        [image, image], batch_size=1,
+        capacity=1)
 
     return {'inputs': images}, labels
 
@@ -59,12 +61,20 @@ def get_input_fn(filename, batch_size=1):
     return lambda: input_fn(filename, batch_size)
 
 
+def unpacker(path):
+    with gzip.open(path, 'rb') as f:
+        print(path + 'is uncompressing and loading...')
+        data = pickle.load(f)
+    print(path + ' has been uploaded')
+    return data
+
+
 def _cnn_model_fn(features, labels, mode):
     # Input Layer
-    input_layer = tf.reshape(features['inputs'][1], [-1, 28, 28, 1])
+    input_layer = tf.reshape(features['inputs'], [-1, 28, 28, 3])
 
     # Spatial Transformer
-    trans = blocks.spacial_transformer(features['inputs'][1], input_layer, out_size=(28, 28))
+    trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
 
     ### Encoder
     conv1 = tf.layers.conv2d(inputs=trans, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
@@ -102,7 +112,7 @@ def _cnn_model_fn(features, labels, mode):
 
     # Pass logits through sigmoid and calculate the Huber loss
     label_indices = tf.cast(labels, tf.int32)
-    onehot_labels = tf.one_hot(label_indices, depth=784)
+    onehot_labels = tf.one_hot(label_indices[1], depth=784)
     loss = tf.losses.huber_loss(labels=onehot_labels, predictions=logits)
 
     # Get cost
