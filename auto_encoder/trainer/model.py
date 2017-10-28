@@ -44,7 +44,7 @@ def read_and_decode(filename_queue):
     return image, label
 
 
-def input_fn(filename, batch_size=100):
+def input_fn(filename, batch_size=1):
     filename_queue = tf.train.string_input_producer([filename])
 
     image, label = read_and_decode(filename_queue)
@@ -55,68 +55,63 @@ def input_fn(filename, batch_size=100):
     return {'inputs': images}, labels
 
 
-def get_input_fn(filename, batch_size=100):
+def get_input_fn(filename, batch_size=1):
     return lambda: input_fn(filename, batch_size)
 
 
 def _cnn_model_fn(features, labels, mode):
     # Input Layer
-    input_layer = tf.reshape(features['inputs'], [-1, 24, 24, 1])
+    input_layer = tf.reshape(features['inputs'][1], [-1, 28, 28, 1])
 
     # Spatial Transformer
-    trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
+    trans = blocks.spacial_transformer(features['inputs'][1], input_layer, out_size=(28, 28))
 
-    # %%
-    # Build the encoder
-    n_filters = [1, 10, 10, 10]
-    filter_sizes = [3, 3, 3, 3]
-    encoder = []
-    shapes = []
-    for layer_i, n_output in enumerate(n_filters[1:]):
-        n_input = current_input.get_shape().as_list()[3]
-        shapes.append(current_input.get_shape().as_list())
-        W = tf.Variable(
-            tf.random_uniform([
-                filter_sizes[layer_i],
-                filter_sizes[layer_i],
-                n_input, n_output],
-                -1.0 / math.sqrt(n_input),
-                1.0 / math.sqrt(n_input)))
-        b = tf.Variable(tf.zeros([n_output]))
-        encoder.append(W)
-        output = tf.nn.relu(
-            tf.add(tf.nn.conv2d(
-                current_input, W, strides=[1, 2, 2, 1], padding='SAME'), b))
-        current_input = output
+    ### Encoder
+    conv1 = tf.layers.conv2d(inputs=trans, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 28x28x32
+    maxpool1 = tf.layers.max_pooling2d(conv1, pool_size=(2, 2), strides=(2, 2), padding='same')
+    # Now 14x14x32
+    conv2 = tf.layers.conv2d(inputs=maxpool1, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 14x14x32
+    maxpool2 = tf.layers.max_pooling2d(conv2, pool_size=(2, 2), strides=(2, 2), padding='same')
+    # Now 7x7x32
+    conv3 = tf.layers.conv2d(inputs=maxpool2, filters=16, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 7x7x16
+    encoded = tf.layers.max_pooling2d(conv3, pool_size=(2, 2), strides=(2, 2), padding='same')
+    # Now 4x4x16
 
-    # %%
-    # store the latent representation
-    z = current_input
-    encoder.reverse()
-    shapes.reverse()
+    ### Decoder
+    upsample1 = tf.image.resize_images(encoded, size=(7, 7), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    # Now 7x7x16
+    conv4 = tf.layers.conv2d(inputs=upsample1, filters=16, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 7x7x16
+    upsample2 = tf.image.resize_images(conv4, size=(14, 14), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    # Now 14x14x16
+    conv5 = tf.layers.conv2d(inputs=upsample2, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 14x14x32
+    upsample3 = tf.image.resize_images(conv5, size=(28, 28), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    # Now 28x28x32
+    conv6 = tf.layers.conv2d(inputs=upsample3, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
+    # Now 28x28x32
 
-    # %%
-    # Build the decoder using the same weights
-    for layer_i, shape in enumerate(shapes):
-        W = encoder[layer_i]
-        b = tf.Variable(tf.zeros([W.get_shape().as_list()[2]]))
-        output = tf.nn.relu(tf.add(
-            tf.nn.conv2d_transpose(
-                current_input, W,
-                tf.stack([tf.shape(features['inputs'])[0], shape[1], shape[2], shape[3]]),
-                strides=[1, 2, 2, 1], padding='SAME'), b))
-        current_input = output
+    logits = tf.layers.conv2d(inputs=conv6, filters=1, kernel_size=(3, 3), padding='same', activation=None)
+    # Now 28x28x1
 
-    # %%
-    # now have the reconstruction through the network
-    y = current_input
-    # cost function measures pixel-wise difference
-    cost = tf.reduce_sum(tf.square(y - input_layer))
+    # Pass logits through sigmoid to get reconstructed image
+    decoded = tf.nn.sigmoid(logits)
+
+    # Pass logits through sigmoid and calculate the Huber loss
+    label_indices = tf.cast(labels, tf.int32)
+    onehot_labels = tf.one_hot(label_indices, depth=784)
+    loss = tf.losses.huber_loss(labels=onehot_labels, predictions=logits)
+
+    # Get cost
+    cost = tf.reduce_mean(loss)
 
     # Define operations
     if mode in (Modes.PREDICT, Modes.EVAL):
-        predicted_indices = tf.argmax(input=cost, axis=1)
-        probabilities = tf.nn.softmax(cost, name='softmax_tensor')
+        predicted_indices = tf.argmax(input=logits, axis=1)
+        probabilities = tf.nn.softmax(logits, name='softmax_tensor')
 
     if mode in (Modes.TRAIN, Modes.EVAL):
         global_step = tf.contrib.framework.get_or_create_global_step()
