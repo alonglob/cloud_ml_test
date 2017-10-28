@@ -66,7 +66,7 @@ def _cnn_model_fn(features, labels, mode):
     input_layer = tf.reshape(features['inputs'], [-1, 28, 28, 1])
 
     # Spatial Transformer
-    trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
+    #trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
 
     ### Encoder
     conv1 = tf.layers.conv2d(inputs=input_layer, filters=32, kernel_size=(3, 3), padding='same', activation=tf.nn.relu)
