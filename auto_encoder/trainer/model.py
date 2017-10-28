@@ -22,7 +22,7 @@ import tensorflow as tf
 from tensorflow.python.estimator.model_fn import ModeKeys as Modes
 import trainer.Models_v1 as blocks
 import gzip, os
-import _pickle as pickle
+import cPickle as pickle
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
