@@ -47,31 +47,22 @@ def read_and_decode(filename_queue):
 
 
 def input_fn(filename, batch_size=1):
-    script_dir = os.path.dirname(__file__)
+  filename_queue = tf.train.string_input_producer([filename])
 
-    image = unpacker(script_dir + '/pickles/Blueberry_images.pickle')
-    images, labels = tf.train.batch(
-        [image, image], batch_size=1,
-        capacity=1)
+  image, label = read_and_decode(filename_queue)
+  images, labels = tf.train.batch(
+      [image, image], batch_size=batch_size,
+      capacity=1)
 
-    return {'inputs': images}, labels
+  return {'inputs': images}, labels
 
 
 def get_input_fn(filename, batch_size=1):
     return lambda: input_fn(filename, batch_size)
 
-
-def unpacker(path):
-    with gzip.open(path, 'rb') as f:
-        print(path + 'is uncompressing and loading...')
-        data = pickle.load(f)
-    print(path + ' has been uploaded')
-    return data
-
-
 def _cnn_model_fn(features, labels, mode):
     # Input Layer
-    input_layer = tf.reshape(features['inputs'], [-1, 28, 28, 3])
+    input_layer = tf.reshape(features['inputs'], [-1, 28, 28, 1])
 
     # Spatial Transformer
     trans = blocks.spacial_transformer(features['inputs'], input_layer, out_size=(28, 28))
